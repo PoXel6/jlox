@@ -1,4 +1,4 @@
-package me.poxel;
+package me.poxel.lox;
 
 import java.io.BufferedReader;
 import java.io.IOException;

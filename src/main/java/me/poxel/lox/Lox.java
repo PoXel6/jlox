@@ -13,6 +13,10 @@ public class Lox {
 
 	static boolean hadError = false;
 
+	static boolean hadRuntimeError = false;
+
+	private static Interpreter interpreter = new Interpreter();
+
 	public void main(String... args) throws IOException {
 		if (args.length > 1) {
 			System.out.println("Usage: jlox [script]");
@@ -22,6 +26,13 @@ public class Lox {
 		} else {
 			runPrompt();
 		}
+	}
+
+	static void runtimeError(RuntimeError err) {
+		System.err.println(err.getMessage() +
+		                   "\n[line " + err.token.line + "]"
+		                  );
+		hadRuntimeError = true;
 	}
 
 	static void error(Token token, String message) {
@@ -60,7 +71,11 @@ public class Lox {
 		run(new String(bytes, Charset.defaultCharset()));
 
 		if (hadError) {
-			System.exit(64);
+			System.exit(65);
+		}
+
+		if (hadRuntimeError) {
+			System.exit(70);
 		}
 	}
 
@@ -74,6 +89,6 @@ public class Lox {
 			return;
 		}
 
-		System.out.println(new AstPrinter().print(expression));
+		interpreter.interpret(expression);
 	}
 }

@@ -3,7 +3,6 @@ package me.poxel.tool;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -15,12 +14,22 @@ public class GenerateAst {
 			System.exit(64);
 		}
 		String outputDir = args[0];
-		defineAst(outputDir,
-		          "Expr",
-		          Arrays.asList("Binary : Expr left, Token operator, Expr right",
-		                        "Grouping : Expr expression",
-		                        "Literal : Object value",
-		                        "Unary : Token operator, Expr right"));
+
+		defineAst(outputDir, "Expr", List.of(
+				"Assign: Token name, Expr value",
+				"Binary : Expr left, Token operator, Expr right",
+				"Grouping : Expr expression",
+				"Literal : Object value",
+				"Unary : Token operator, Expr right",
+				"Variable : Token name"
+		));
+
+		defineAst(outputDir, "Stmt", List.of(
+				"Block : List<Stmt> statements",
+				"Expression : Expr expression",
+				"Print : Expr expression",
+				"Var : Token name, Expr initializer"
+		));
 
 	}
 
@@ -62,9 +71,9 @@ public class GenerateAst {
 	}
 
 	private void defineType(PrintWriter writer,
-	                        String baseName,
-	                        String className,
-	                        String fieldList) {
+			String baseName,
+			String className,
+			String fieldList) {
 		writer.println("\tstatic class " + className + " extends " + baseName + " {");
 
 		writer.println("\t\t" + className + "(" + fieldList + ") {");

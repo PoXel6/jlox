@@ -1,0 +1,25 @@
+print "Hello, World!";
+print  (2 + 2 + 5 * 5 / 4) * 2 / 4 + 11;
+// print "(2 + 2 + 5 * 5 / 4) * 2 / 4 + 11" + (2 + 2 + 5 * 5 / 4) * 2 / 4 + 11;
+print true == false;
+print 1 > 2;
+// print 1 >= 2 >= 2.5 >= 4;
+var a = "global a";
+var b = "global b";
+var c = "global c";
+{
+    var a = "outer a";
+    var b = "outer b";
+    {
+        var a = "inner a";
+        print a;
+        print b;
+        print c;
+    }
+    print a;
+    print b;
+    print c;
+}
+print a;
+print b;
+print c;

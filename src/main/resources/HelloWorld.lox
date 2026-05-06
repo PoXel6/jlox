@@ -1,25 +1,26 @@
-print "Hello, World!";
-print  (2 + 2 + 5 * 5 / 4) * 2 / 4 + 11;
-// print "(2 + 2 + 5 * 5 / 4) * 2 / 4 + 11" + (2 + 2 + 5 * 5 / 4) * 2 / 4 + 11;
-print true == false;
-print 1 > 2;
-// print 1 >= 2 >= 2.5 >= 4;
-var a = "global a";
-var b = "global b";
-var c = "global c";
-{
-    var a = "outer a";
-    var b = "outer b";
-    {
-        var a = "inner a";
-        print a;
-        print b;
-        print c;
-    }
-    print a;
-    print b;
-    print c;
+if (true) {
+    println("we iffing");
+} else {
+    println("we ain't elseing");
 }
-print a;
-print b;
-print c;
+
+if (false) {
+    println("we ain't iffing");
+} else {
+    println("we elseing");
+}
+
+for (var i = 0; i < 10; i = i + 1) {
+    println(i);
+}
+
+var i = 0;
+while (i < 10) {
+    println(i);
+    i = i + 1;
+}
+
+println(clock());
+println("hello");
+print scan();
+println("world");

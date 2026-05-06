@@ -25,6 +25,9 @@ public class Parser {
 
 	private Stmt declarations() {
 		try {
+			if (match(TokenType.FUN)) {
+				return function("function");
+			}
 			if (match(TokenType.VAR)) {
 				return varDeclaration();
 			}
@@ -33,6 +36,27 @@ public class Parser {
 			synchronize();
 			return null;
 		}
+	}
+
+	@SuppressWarnings("ThrowableNotThrown")
+	private Stmt.Function function(String kind) {
+		Token name = consume(TokenType.IDENTIFIER, "Expect %s name.".formatted(kind));
+		consume(TokenType.LEFT_PAREN, "Expect '(' after %s name.".formatted(kind));
+		List<Token> parameters = new ArrayList<>();
+
+		if (!check(TokenType.RIGHT_PAREN)) {
+			do {
+				if (parameters.size() >= 255) {
+					error(peek(), "Can't have more than 255 parameters.");
+				}
+				parameters.add(consume(TokenType.IDENTIFIER, "Expect parameter name."));
+			} while (match(TokenType.COMMA));
+		}
+		consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.");
+
+		consume(TokenType.LEFT_BRACE, "Expect '{' before %s body.".formatted(kind));
+		List<Stmt> body = block();
+		return new Stmt.Function(name, parameters, body);
 	}
 
 	private Stmt varDeclaration() {
@@ -61,6 +85,10 @@ public class Parser {
 			return printStatement();
 		}
 
+		if (match(TokenType.RETURN)) {
+			return returnStatement();
+		}
+
 		if (match(TokenType.WHILE)) {
 			return whileStatement();
 		}
@@ -72,23 +100,34 @@ public class Parser {
 		return expressionStatement();
 	}
 
+	private Stmt returnStatement() {
+		Token keyword = previous();
+		Expr value = null;
+		if (!check(TokenType.SEMICOLON)) {
+			value = expression();
+		}
+		consume(TokenType.SEMICOLON, "Expect ';' after return value.");
+		return new Stmt.Return(keyword, value);
+	}
+
 	private Stmt forStatement() {
 		consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
 
-		//		Stmt initializer = switch (advance()) {
-		//			case TokenType.SEMICOLON -> null;
-		//			case TokenType.VAR -> varDeclaration();
-		//			default -> expressionStatement();
-		//		};
+		Stmt initializer = switch (advance().type) {
+			case TokenType.SEMICOLON -> null;
+			case TokenType.VAR -> varDeclaration();
+			default -> expressionStatement();
+		};
 
-		Stmt initializer;
-		if (match(TokenType.SEMICOLON)) {
-			initializer = null;
-		} else if (match(TokenType.VAR)) {
-			initializer = varDeclaration();
-		} else {
-			initializer = expressionStatement();
-		}
+		// This is book code, I have kept this in case I messed something up.
+		//		Stmt initializer;
+		//		if (match(TokenType.SEMICOLON)) {
+		//			initializer = null;
+		//		} else if (match(TokenType.VAR)) {
+		//			initializer = varDeclaration();
+		//		} else {
+		//			initializer = expressionStatement();
+		//		}
 
 		Expr condition = null;
 		if (!check(TokenType.SEMICOLON)) {
@@ -260,7 +299,36 @@ public class Parser {
 			Expr right = unary();
 			return new Expr.Unary(operator, right);
 		}
-		return primary();
+		return call();
+	}
+
+	private Expr call() {
+		Expr expr = primary();
+		while (true) {
+			if (match(TokenType.LEFT_PAREN)) {
+				expr = finishCall(expr);
+			} else {
+				break;
+			}
+		}
+		return expr;
+	}
+
+	@SuppressWarnings("ThrowableNotThrown")
+	private Expr finishCall(Expr callee) {
+		List<Expr> arguments = new ArrayList<>();
+
+		if (!check(TokenType.RIGHT_PAREN)) {
+			do {
+				if (arguments.size() >= 255) {
+					error(peek(), "Can't have more than 255 arguments.");
+				}
+				arguments.add(expression());
+			} while (match(TokenType.COMMA));
+		}
+
+		Token paren = consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.");
+		return new Expr.Call(callee, paren, arguments);
 	}
 
 	private Expr primary() {

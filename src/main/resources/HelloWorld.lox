@@ -1,26 +1,11 @@
-if (true) {
-    println("we iffing");
-} else {
-    println("we ain't elseing");
+class Cake {
+    taste() {
+        var adjective = "delicious";
+        println("The " + this.flavor + " cake is " + adjective + "!");
+        println("hello world");
+    }
 }
-
-if (false) {
-    println("we ain't iffing");
-} else {
-    println("we elseing");
-}
-
-for (var i = 0; i < 10; i = i + 1) {
-    println(i);
-}
-
-var i = 0;
-while (i < 10) {
-    println(i);
-    i = i + 1;
-}
-
-println(clock());
-println("hello");
-print scan();
-println("world");
+var cake = Cake();
+cake.flavor = "German chocolate";
+println(cake.taste());
+println(cake.flavor);

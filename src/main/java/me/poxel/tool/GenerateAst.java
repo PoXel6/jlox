@@ -19,15 +19,19 @@ public class GenerateAst {
 				"Assign: Token name, Expr value",
 				"Binary : Expr left, Token operator, Expr right",
 				"Call : Expr callee, Token paren, List<Expr> arguments",
+				"Get : Expr object, Token name",
 				"Grouping : Expr expression",
 				"Literal : Object value",
 				"Logical : Expr left, Token operator, Expr right",
+				"Set : Expr object, Token name, Expr value",
+				"This : Token keyword",
 				"Unary : Token operator, Expr right",
 				"Variable : Token name"
 		));
 
 		defineAst(outputDir, "Stmt", List.of(
 				"Block : List<Stmt> statements",
+				"Class : Token name, List<Stmt.Function> methods",
 				"Expression : Expr expression",
 				"Function : Token name, List<Token> params, List<Stmt> body",
 				"If : Expr condition, Stmt thenBranch, Stmt elseBranch",
@@ -76,10 +80,12 @@ public class GenerateAst {
 		writer.println();
 	}
 
-	private void defineType(PrintWriter writer,
+	private void defineType(
+			PrintWriter writer,
 			String baseName,
 			String className,
-			String fieldList) {
+			String fieldList
+	) {
 		writer.println("\tstatic class " + className + " extends " + baseName + " {");
 
 		writer.println("\t\t" + className + "(" + fieldList + ") {");

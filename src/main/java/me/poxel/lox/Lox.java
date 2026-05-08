@@ -31,7 +31,7 @@ public class Lox {
 	static void runtimeError(RuntimeError err) {
 		System.err.println(err.getMessage() +
 		                   "\n[line " + err.token.line + "]"
-		                  );
+		);
 		hadRuntimeError = true;
 	}
 
@@ -86,6 +86,13 @@ public class Lox {
 		List<Stmt> statements = parser.parse();
 
 		if (hadError) {
+			return;
+		}
+
+		Resolver resolver = new Resolver(interpreter);
+		resolver.resolve(statements);
+
+		if (hadError) { // Stop if there is any resolution error.
 			return;
 		}
 

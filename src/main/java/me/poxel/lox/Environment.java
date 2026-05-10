@@ -59,7 +59,6 @@ public class Environment {
 	private Environment ancestor(int distance) {
 		Environment environment = this;
 		for (int i = 0; i < distance; i++) {
-			assert environment != null;
 			environment = environment.enclosing;
 		}
 		return environment;

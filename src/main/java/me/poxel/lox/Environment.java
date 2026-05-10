@@ -33,8 +33,7 @@ public class Environment {
 	}
 
 	public Object getAt(Integer distance, String name) {
-		ancestor(distance).values.get(name);
-		return null;
+		return ancestor(distance).values.get(name);
 	}
 
 	public void assignAt(Integer distance, Token name, Object value) {

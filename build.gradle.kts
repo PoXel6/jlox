@@ -1,9 +1,14 @@
 plugins {
+    application
     id("java")
 }
 
 group = "me.poxel"
-version = "0.1"
+version = "1.0"
+
+application {
+    mainClass = "me.poxel.lox.Lox"
+}
 
 repositories {
     mavenCentral()
